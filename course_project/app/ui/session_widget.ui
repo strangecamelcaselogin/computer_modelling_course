@@ -13,36 +13,43 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QPushButton" name="create">
+        <widget class="QPushButton" name="create_session_button">
          <property name="text">
           <string>Новый сценарий</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="run">
+        <widget class="QPushButton" name="run_button">
          <property name="text">
           <string>Запустить</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="stop">
+        <widget class="QPushButton" name="stop_button">
          <property name="text">
           <string>Остановить</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="results_button">
+         <property name="text">
+          <string>Результаты</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QTableWidget" name="scenarios_widget">
+      <widget class="QTableWidget" name="scenarios_table">
        <property name="rowCount">
         <number>0</number>
        </property>
@@ -71,6 +78,16 @@
        </column>
        <column>
         <property name="text">
+         <string>Данные 1</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Данные 2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
          <string>Признаки</string>
         </property>
        </column>
@@ -82,11 +99,6 @@
        <column>
         <property name="text">
          <string>Статус</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Результат</string>
         </property>
        </column>
       </widget>

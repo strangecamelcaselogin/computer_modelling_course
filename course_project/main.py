@@ -1,10 +1,11 @@
 import logging
 import sys
-from setup import logger
+from app.setup import logger
 from PyQt5 import QtWidgets
 
-from app.main_window import MainWindow
-from db import db
+from app.widgets import MainWindow
+from app.db import db
+from app.models import Session, Scenario, DataCollection, Statistic
 
 
 if __name__ == "__main__":
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     main_window = None
     try:
         db.connect()
-        db.create_tables([])  # fixme
+        db.create_tables([Session, Scenario, DataCollection, Statistic])
 
         main_window = MainWindow(app)
         main_window.show()
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.exception(e)
     finally:
-        db.close()  # todo check
+        db.close()
         if main_window:
             main_window.stop()
         logger.info('App close')
