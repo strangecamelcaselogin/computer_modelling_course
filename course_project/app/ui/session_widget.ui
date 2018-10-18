@@ -19,7 +19,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QPushButton" name="create_session_button">
+        <widget class="QPushButton" name="create_scenario_button">
          <property name="text">
           <string>Новый сценарий</string>
          </property>

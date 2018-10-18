@@ -19,9 +19,9 @@ class Ui_SessionWidget(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.create_session_button = QtWidgets.QPushButton(SessionWidget)
-        self.create_session_button.setObjectName("create_session_button")
-        self.horizontalLayout_2.addWidget(self.create_session_button)
+        self.create_scenario_button = QtWidgets.QPushButton(SessionWidget)
+        self.create_scenario_button.setObjectName("create_scenario_button")
+        self.horizontalLayout_2.addWidget(self.create_scenario_button)
         self.run_button = QtWidgets.QPushButton(SessionWidget)
         self.run_button.setObjectName("run_button")
         self.horizontalLayout_2.addWidget(self.run_button)
@@ -62,7 +62,7 @@ class Ui_SessionWidget(object):
 
     def retranslateUi(self, SessionWidget):
         _translate = QtCore.QCoreApplication.translate
-        self.create_session_button.setText(_translate("SessionWidget", "Новый сценарий"))
+        self.create_scenario_button.setText(_translate("SessionWidget", "Новый сценарий"))
         self.run_button.setText(_translate("SessionWidget", "Запустить"))
         self.stop_button.setText(_translate("SessionWidget", "Остановить"))
         self.results_button.setText(_translate("SessionWidget", "Результаты"))

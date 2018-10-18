@@ -36,13 +36,16 @@
     <addaction name="separator"/>
     <addaction name="exit_action"/>
    </widget>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="data_menu">
     <property name="title">
-     <string>Настройки</string>
+     <string>Данные</string>
     </property>
+    <addaction name="create_action_2"/>
+    <addaction name="delete_action"/>
+    <addaction name="edit_action"/>
    </widget>
    <addaction name="session_menu"/>
-   <addaction name="menu"/>
+   <addaction name="data_menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="create_action">
@@ -68,6 +71,21 @@
   <action name="exit_action">
    <property name="text">
     <string>Выйти</string>
+   </property>
+  </action>
+  <action name="create_action_2">
+   <property name="text">
+    <string>Создать</string>
+   </property>
+  </action>
+  <action name="delete_action">
+   <property name="text">
+    <string>Удалить</string>
+   </property>
+  </action>
+  <action name="edit_action">
+   <property name="text">
+    <string>Редактировать</string>
    </property>
   </action>
  </widget>

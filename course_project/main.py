@@ -17,6 +17,9 @@ if __name__ == "__main__":
     main_window = None
     try:
         db.connect()
+
+        # todo arg ?
+        # db.drop_tables([Session, Scenario, DataCollection, Statistic])
         db.create_tables([Session, Scenario, DataCollection, Statistic])
 
         main_window = MainWindow(app)
