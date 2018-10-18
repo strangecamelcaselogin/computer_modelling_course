@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
 from peewee import IntegrityError
 
 from app.setup import logger
-from app.controller import Controller
 from app.model import Model
 from app.ui.main_window import Ui_MainWindow
 
@@ -15,8 +14,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.application = application
 
-        self.model = Model()
-        self.controller = Controller(self.model, self)
+        self.model = Model(self)
 
         self.session_widget = SessionWidget()
         self.current_widget = None
@@ -42,7 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                             "Имя новой сессии:", QLineEdit.Normal, "")
             if ok:
                 try:
-                    session = self.controller.new_session(name)
+                    session = self.model.new_session(name)
                     success = True
                 except IntegrityError as e:
                     logger.info(e)

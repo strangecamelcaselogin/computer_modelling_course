@@ -4,8 +4,9 @@ from app.models import Session, Scenario
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, view):
         self.current_session = None
+        self.view = view  # коллбек на обновление данных
 
     def get_session_by_id(self, id_):
         return Session.get(id=id_)
