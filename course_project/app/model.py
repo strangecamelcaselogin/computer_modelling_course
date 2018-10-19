@@ -1,6 +1,8 @@
 from functools import wraps
 
-from app.models import Session, Scenario
+import ujson as ujson
+
+from app.models import Session, Scenario, DataCollection
 
 
 def update_view(method):
@@ -79,4 +81,15 @@ class Model:
         pass
 
     def delete_scenario(self, id_):
-        Scenario.delete().where(Scenario.id == id_)
+        return Scenario.delete().where(Scenario.id == id_)
+
+    def new_data_collection(self, name, learn_data, test_data):
+        dc = DataCollection(
+            name=name,
+            learn_data=ujson.dumps(learn_data),
+            test_data=ujson.dumps(test_data)
+        )
+
+        dc.save(force_insert=True)
+
+        return dc

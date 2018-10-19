@@ -23,8 +23,8 @@ class SessionSelectionDialog(QDialog, Ui_session_selection):
         self.sessions_list.itemSelectionChanged.connect(self.select)
         self.sessions_list.itemDoubleClicked.connect(lambda item: self.select(item) and self.close())
 
-        self.close_button.clicked.connect(self.close)
         self.load_button.clicked.connect(self.close)
+        self.close_button.clicked.connect(self.leave)
 
     def exec_(self):
         sessions = self.model.get_sessions()
@@ -33,7 +33,7 @@ class SessionSelectionDialog(QDialog, Ui_session_selection):
 
         super().exec_()
 
-        return self.selected_id
+        return bool(self.selected_id), self.selected_id
 
     def select(self, item: SessionSelectionItem=None):
         if item is None:
@@ -42,3 +42,7 @@ class SessionSelectionDialog(QDialog, Ui_session_selection):
         self.selected_id = item.session_id
 
         return True
+
+    def leave(self):
+        self.selected_id = None
+        self.close()

@@ -40,9 +40,9 @@
     <property name="title">
      <string>Данные</string>
     </property>
-    <addaction name="create_action_2"/>
-    <addaction name="delete_action"/>
-    <addaction name="edit_action"/>
+    <addaction name="create_dataset_action"/>
+    <addaction name="delete_dataset_action"/>
+    <addaction name="edit_dataset_action"/>
    </widget>
    <addaction name="session_menu"/>
    <addaction name="data_menu"/>
@@ -73,17 +73,17 @@
     <string>Выйти</string>
    </property>
   </action>
-  <action name="create_action_2">
+  <action name="create_dataset_action">
    <property name="text">
     <string>Создать</string>
    </property>
   </action>
-  <action name="delete_action">
+  <action name="delete_dataset_action">
    <property name="text">
     <string>Удалить</string>
    </property>
   </action>
-  <action name="edit_action">
+  <action name="edit_dataset_action">
    <property name="text">
     <string>Редактировать</string>
    </property>
