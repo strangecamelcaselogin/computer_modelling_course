@@ -23,7 +23,6 @@ if __name__ == "__main__":
         db.create_tables([Session, Scenario, DataCollection, Statistic])
 
         main_window = MainWindow(app)
-        main_window.show()
         sys.exit(app.exec())
     except Exception as e:
         logger.exception(e)

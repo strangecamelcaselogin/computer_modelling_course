@@ -39,7 +39,7 @@ class Model:
 
     @update_view
     def set_current_session(self, session):
-        self._current_session = session  # todo id?
+        self._current_session = session
 
     def delete_session(self, name):
         return Session.delete().where(Session.name == name)

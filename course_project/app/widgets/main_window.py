@@ -1,9 +1,11 @@
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
 from peewee import IntegrityError
 
+from app.helpers import noty
 from app.setup import logger
 from app.model import Model
 from app.ui.main_window import Ui_MainWindow
+from app.widgets.placeholder import PlaceholderWidget
 
 from app.widgets.session_selection import SessionSelectionDialog
 from app.widgets.session_widget import SessionWidget
@@ -23,10 +25,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.model = Model(self)
 
         self.session_widget = SessionWidget(self.model)
-        self.current_widget = None  # todo placeholder
+        self.placeholder_widget = PlaceholderWidget()
 
         self.setupUi(self)
         self.connectUi()
+
+        self.current_widget = None
+        self.show_placeholder()
+
+        self.show()
 
     def connectUi(self):
         """ Соединяет слоты и сигналы """
@@ -48,8 +55,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 try:
                     session = self.model.new_session(name)
                     success = True
-                except IntegrityError as e:
-                    logger.info(e)   # todo noty
+                except IntegrityError:
+                    noty('Ошибка', 'Сессия с таким именем уже существует')
                     continue
             break
 
@@ -66,21 +73,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.show_session()
             self.model.set_current_session(session)
 
-    def show_session(self):
-        """ Открытие виджета сессии в главном окне """
-
+    def set_widget(self, widget):
+        """ Сменяет главный виджет """
         prev_widget = self.current_widget
-        self.current_widget = self.session_widget
+        self.current_widget = widget
 
         if prev_widget is None:
             self.gridLayout.addWidget(self.current_widget)
         else:
-            self.gridLayout.replaceWidget(prev_widget, self.current_widget)  # todo check if it works
+            self.gridLayout.replaceWidget(prev_widget, self.current_widget)
+
+    def show_placeholder(self):
+        self.set_widget(self.placeholder_widget)
+
+    def show_session(self):
+        """ Открытие виджета сессии в главном окне """
+        self.set_widget(self.session_widget)
 
     def new_scenario(self):
         name = text_dialog(self, "Создание нового сценария", "Введите имя сценария")
 
-        # todo while True: ?
         if name:
             self.model.new_scenario(name)
 
