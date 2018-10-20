@@ -1,8 +1,11 @@
 from functools import wraps
 
 import ujson as ujson
+from typing import List, Optional
 
+from app.learn_core.dataset_loaders.simple_fs_loader import SimpleFSLoader
 from app.models import Session, Scenario, DataCollection
+from config import config
 
 
 def update_view(method):
@@ -54,16 +57,17 @@ class Model:
 
         return session
 
-    def get_current_scenarios(self):
+    def get_scenarios(self, session: Session) -> List[Scenario]:
+        return list(Scenario.select().where(Scenario.session == session))  # fixme backref
+
+    def get_current_scenarios(self) -> Optional[List[Scenario]]:
         if self._current_session is None:
             return
 
-        scenarios = Scenario.select().where(Scenario.session == self._current_session)  # fixme backref
-
-        return list(scenarios)
+        return self.get_scenarios(self._current_session)
 
     def get_scenario(self, id_):
-        Scenario.get(id=id_)
+        return Scenario.get(id=id_)
 
     @update_view
     def new_scenario(self, name: str):
@@ -83,13 +87,11 @@ class Model:
     def delete_scenario(self, id_):
         return Scenario.delete().where(Scenario.id == id_)
 
-    def new_data_collection(self, name, learn_data, test_data):
-        dc = DataCollection(
-            name=name,
-            learn_data=ujson.dumps(learn_data),
-            test_data=ujson.dumps(test_data)
-        )
+    def new_data_collection(self, name, path):
+        loader = SimpleFSLoader(config.data_path)
 
+        binary_dataset = loader.load(path).as_binary()
+
+        dc = DataCollection(name=name, data=binary_dataset)
         dc.save(force_insert=True)
-
         return dc

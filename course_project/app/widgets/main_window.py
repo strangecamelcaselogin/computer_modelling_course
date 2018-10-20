@@ -1,15 +1,17 @@
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
+from pathlib import Path
+
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit, QFileDialog
 from peewee import IntegrityError
 
 from app.helpers import noty
 from app.setup import logger
 from app.model import Model
 from app.ui.main_window import Ui_MainWindow
-from app.widgets.create_dataset_widget import CreateDatasetDialog
 from app.widgets.placeholder import PlaceholderWidget
 
 from app.widgets.session_selection import SessionSelectionDialog
 from app.widgets.session_widget import SessionWidget
+from config import config
 
 
 def text_dialog(self, header, message):
@@ -24,6 +26,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.application = application
 
         self.model = Model(self)
+
+        self.data_path = Path(config.data_path).absolute()
 
         self.session_widget = SessionWidget(self.model)
         self.placeholder_widget = PlaceholderWidget()
@@ -46,9 +50,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.exit_action.triggered.connect(self.application.quit)
 
         # меню коллекций
-        self.create_dataset_action.triggered.connect(self.new_dataset)
-        self.edit_dataset_action.triggered.connect(self.not_implemented)  # todo
-        self.delete_dataset_action.triggered.connect(self.not_implemented)  # todo
+        self.register_datacollection_action.triggered.connect(self.new_dataset)
+        self.delete_datacollection_action.triggered.connect(self.not_implemented)  # todo
 
         # todo оно точно должно быть тут?
         self.session_widget.create_scenario_button.clicked.connect(self.new_scenario)
@@ -110,13 +113,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.model.new_scenario(name)
 
     def new_dataset(self):
-        ok, data = CreateDatasetDialog(self.model).exec_()
-
-        if ok:
-            name, learn_data, test_data, options = data
-            print(name, learn_data, test_data, options)
-            self.model.new_data_collection(name, learn_data, test_data)
-            # todo create dataset record
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.ShowDirsOnly
+        path = QFileDialog.getExistingDirectory(self, 'Загрузить данные', str(self.data_path), options=options)
+        if path:
+            path = Path(path)
+            name = path.relative_to(self.data_path).name
+            try:
+                self.model.new_data_collection(name, path)
+            except Exception as e:
+                noty("Ошибка", "Не получилось загрузить данные")  # fixme
+                logger.exception(e)
 
     def update(self):
         """ Синхронизация с моделью, коллбек """

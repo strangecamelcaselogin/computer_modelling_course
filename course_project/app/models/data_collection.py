@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from peewee import CharField, DateTimeField, PrimaryKeyField, TextField
+from peewee import CharField, DateTimeField, PrimaryKeyField, BlobField
 
 from app.models.base_model import BaseModel
 
@@ -10,5 +10,4 @@ class DataCollection(BaseModel):
     name = CharField()
     creation_date = DateTimeField(default=datetime.now)
 
-    learn_data = TextField()  # данные для обучения
-    test_data = TextField()  # данные для валидации
+    data = BlobField()

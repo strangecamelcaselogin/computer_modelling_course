@@ -78,12 +78,7 @@
        </column>
        <column>
         <property name="text">
-         <string>Данные 1</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Данные 2</string>
+         <string>Имя коллекции</string>
         </property>
        </column>
        <column>
