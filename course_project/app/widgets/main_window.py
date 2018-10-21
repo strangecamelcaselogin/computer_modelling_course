@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from peewee import IntegrityError
 
-from app.helpers import noty
+from app.helpers import noty, text_dialog
 from app.setup import logger
 from app.model import Model
 from app.ui.main_window import Ui_MainWindow
@@ -12,12 +12,6 @@ from app.widgets.placeholder import PlaceholderWidget
 from app.widgets.session_selection import SessionSelectionDialog
 from app.widgets.session_widget import SessionWidget
 from config import config
-
-
-def text_dialog(self, header, message):
-    text, ok = QInputDialog.getText(self, header, message, QLineEdit.Normal, "")
-    if ok:
-        return text
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -29,7 +23,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.data_path = Path(config.data_path).absolute()
 
-        self.session_widget = SessionWidget(self.model)
         self.placeholder_widget = PlaceholderWidget()
 
         self.setupUi(self)
@@ -53,12 +46,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.register_datacollection_action.triggered.connect(self.new_dataset)
         self.delete_datacollection_action.triggered.connect(self.not_implemented)  # todo
 
-        # todo оно точно должно быть тут?
-        self.session_widget.create_scenario_button.clicked.connect(self.new_scenario)
-        self.session_widget.run_button.clicked.connect(self.not_implemented)  # todo
-        self.session_widget.stop_button.clicked.connect(self.not_implemented)  # todo
-        self.session_widget.results_button.clicked.connect(self.not_implemented)  # todo
-
     def not_implemented(self):
         noty("not_implemented", "not_implemented")
 
@@ -77,7 +64,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def show_session(self):
         """ Открытие виджета сессии в главном окне """
-        self.set_widget(self.session_widget)
+        self.set_widget(SessionWidget(self.model))
 
     def new_session_dialog(self):
         """ создание новой сессии """
@@ -105,12 +92,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             session = self.model.get_session_by_id(selected_session_id)
             self.show_session()
             self.model.set_current_session(session)
-
-    def new_scenario(self):
-        name = text_dialog(self, "Создание нового сценария", "Введите имя сценария")
-
-        if name:
-            self.model.new_scenario(name)
 
     def new_dataset(self):
         options = QFileDialog.Options()

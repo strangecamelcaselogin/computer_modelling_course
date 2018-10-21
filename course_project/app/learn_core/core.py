@@ -1,43 +1,81 @@
+from datetime import datetime
+from threading import Thread
 from typing import List
 
+from app.learn_core.classifiers.simple_classifier import SimpleClassifier
 from app.learn_core.dataset import Dataset
-from app.learn_core.features_extractors.abstract_feature_extractor import AbstractFeatureExtractor
-from app.learn_core.classifiers.abstract_classifier import AbstractClassifier
+from app.learn_core.features_extractors import AbstractFeatureExtractor, SimpleExtractor
+from app.learn_core.classifiers import AbstractClassifier
 from app.model import Model
-from app.models import Session, Scenario, DataCollection
+from app.models import Scenario, DataCollection
+from app.setup import logger
 
 
 class SessionProcessor:
-    def __init__(self, session: Session, model: Model):
-        self.session = session
+    def __init__(self, model: Model):
         self.model = model
+        self._running = False
+        self._thread = None
 
-        # todo thread
+    def start(self):
+        if self._running:
+            raise Exception()  # fixme
+
+        self._running = True
+        self._thread = Thread(target=self._safe_wrapper)
+        self._thread.start()
+
+    def stop(self):
+        if not self._running:
+            raise Exception()  # fixme
+
+        self._running = False
+        if self._thread:
+            self._thread.join()  # todo timeout
+
+    def _safe_wrapper(self):
+        try:
+            self._process()
+        except Exception as e:
+            logger.exception(e)
+            # todo send signal?
 
     def _process(self):
-        scenarios = self.model.get_scenarios(self.session)
+        scenarios = self.model.get_scenarios(self.model.current_session)
 
-        for s in scenarios:
+        while self._running:
+            s = scenarios[0]  # todo pop new scenario
+
             dataset = self._load_dataset(s)
             fe = self._get_feature_extractors(s)
 
             processed_dataset = self._process_dataset(dataset, fe)
 
             classifier = self._instantiate_classifier(s)
-            classifier.learn(processed_dataset.train_data)
-            classifier.validate(processed_dataset.test_data)
 
+            time = datetime.now()
+            classifier.learn(processed_dataset)  # .train_data
+            time = datetime.now() - time
+            statistics = classifier.validate(processed_dataset)  # .test_data
+
+            # todo save statistics, time
             # todo save_classifier?
 
     def _load_dataset(self, current_scenario: Scenario) -> Dataset:
-        dc: DataCollection = DataCollection.get(id=current_scenario.collection)
-        return Dataset.from_binary(dc.data)
+        # todo current_scenario.collection
+        first_collection = DataCollection.select()[0]
+
+        # dc: DataCollection = DataCollection.get(id=current_scenario.collection)
+        return Dataset.from_binary(first_collection .data)
 
     def _get_feature_extractors(self, current_scenario: Scenario) -> List[AbstractFeatureExtractor]:
-        raise NotImplementedError
+        return [SimpleExtractor()]  # todo
 
     def _instantiate_classifier(self, current_scenario: Scenario) -> AbstractClassifier:
-        raise NotImplementedError
+        return SimpleClassifier()  # todo
 
     def _process_dataset(self, dataset: Dataset, feature_extractors: List[AbstractFeatureExtractor]) -> Dataset:
-        raise NotImplementedError
+        for fe in feature_extractors:
+            pass  # todo
+
+        return None

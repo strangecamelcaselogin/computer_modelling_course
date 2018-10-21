@@ -1,4 +1,7 @@
-class SimpleExtractor:
+from app.learn_core.features_extractors.abstract_feature_extractor import AbstractFeatureExtractor
+
+
+class SimpleExtractor(AbstractFeatureExtractor):
     def __init__(self):
         pass
 
