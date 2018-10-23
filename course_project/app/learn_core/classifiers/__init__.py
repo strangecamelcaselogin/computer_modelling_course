@@ -1,1 +1,2 @@
 from app.learn_core.classifiers.abstract_classifier import AbstractClassifier
+from app.learn_core.classifiers.simple_classifier import SimpleClassifier

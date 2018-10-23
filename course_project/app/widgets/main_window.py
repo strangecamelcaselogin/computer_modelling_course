@@ -9,7 +9,7 @@ from app.model import Model
 from app.ui.main_window import Ui_MainWindow
 from app.widgets.placeholder import PlaceholderWidget
 
-from app.widgets.session_selection import SessionSelectionDialog
+from app.widgets.session_selection_dialog import SessionSelectionDialog
 from app.widgets.session_widget import SessionWidget
 from config import config
 

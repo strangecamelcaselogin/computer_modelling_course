@@ -1,9 +1,11 @@
+import ujson
 from functools import wraps
 
-import ujson as ujson
 from typing import List, Optional
 
-from app.learn_core.dataset_loaders.simple_fs_loader import SimpleFSLoader
+from app.learn_core.classifiers import SimpleClassifier, AbstractClassifier
+from app.learn_core.dataset_loaders import SimpleFSLoader
+from app.learn_core.features_extractors import SimpleExtractor, AbstractFeatureExtractor
 from app.models import Session, Scenario, DataCollection
 from config import config
 
@@ -25,6 +27,7 @@ class Model:
         self._current_session = None
         self.view = view  # коллбек на обновление данных
 
+    # Сессии
     def get_session_by_id(self, id_):
         return Session.get(id=id_)
 
@@ -57,6 +60,7 @@ class Model:
 
         return session
 
+    # Сценарии
     def get_scenarios(self, session: Session) -> List[Scenario]:
         return list(Scenario.select().where(Scenario.session == session))  # fixme backref
 
@@ -70,22 +74,31 @@ class Model:
         return Scenario.get(id=id_)
 
     @update_view
-    def new_scenario(self, name: str):
+    def new_scenario(self, name: str, data_collection: DataCollection, feature_extractors: List[str], classifier: str):
         if self._current_session is None:
             return
 
-        scenario = Scenario(name=name, session=self._current_session)
+        scenario = Scenario(
+            name=name,
+            session=self._current_session,
+            collection=data_collection,
+            feature_extractors=ujson.dumps(feature_extractors),
+            classifier=classifier
+        )
 
         scenario.save(force_insert=True)
 
         return scenario
 
     def update_scenario(self, dataset, features, classifier, statistics):
-        # todo
-        pass
+        raise NotImplementedError
 
     def delete_scenario(self, id_):
         return Scenario.delete().where(Scenario.id == id_)
+
+    # Датасеты (коллекции)
+    def get_data_collections(self):
+        return list(DataCollection.select())
 
     def new_data_collection(self, name, path):
         loader = SimpleFSLoader(config.data_path)
@@ -95,3 +108,15 @@ class Model:
         dc = DataCollection(name=name, data=binary_dataset)
         dc.save(force_insert=True)
         return dc
+
+    # Классификаторы
+    def get_classifiers(self):
+        return [SimpleClassifier]
+
+    # FE
+    def get_feature_extractors(self):
+        return [SimpleExtractor]
+
+    # Результаты
+    def get_current_results(self):
+        raise NotImplementedError

@@ -1,13 +1,14 @@
 from PyQt5.QtWidgets import QWidget, QTableWidgetItem
 
-from app.helpers import text_dialog, noty
+from app.helpers import noty
 from app.learn_core.core import SessionProcessor
 from app.model import Model
 from app.ui.session_widget import Ui_SessionWidget
+from app.widgets.scenario_dialog import ScenarioDialog
 
 
 class SessionWidget(QWidget, Ui_SessionWidget):
-    # todo editing
+    # todo block cell editing
 
     def __init__(self, model: Model):
         super().__init__()
@@ -29,10 +30,17 @@ class SessionWidget(QWidget, Ui_SessionWidget):
         noty("not_implemented", "not_implemented")
 
     def new_scenario(self):
-        name = text_dialog(self, "Создание нового сценария", "Введите имя сценария")
+        sd = ScenarioDialog(self.model)
 
-        if name:
-            self.model.new_scenario(name)
+        ok, scenario_data = sd.exec_()
+
+        if ok:
+            self.model.new_scenario(
+                scenario_data['name'],
+                scenario_data['data_collection'],
+                scenario_data['feature_extractors'],
+                scenario_data['classifier_class']
+            )
 
     def run_session(self):
         noty('msg', 'run')
@@ -51,7 +59,7 @@ class SessionWidget(QWidget, Ui_SessionWidget):
             row_pos = table.rowCount()
             table.insertRow(row_pos)
             table.setItem(row_pos, 0, QTableWidgetItem(scenario.name))
-            table.setItem(row_pos, 1, QTableWidgetItem('no data name'))
-            table.setItem(row_pos, 2, QTableWidgetItem('no features'))
-            table.setItem(row_pos, 3, QTableWidgetItem('no classifier'))
+            table.setItem(row_pos, 1, QTableWidgetItem(scenario.collection.name))
+            table.setItem(row_pos, 2, QTableWidgetItem(scenario.feature_extractors))
+            table.setItem(row_pos, 3, QTableWidgetItem(scenario.classifier))
             table.setItem(row_pos, 4, QTableWidgetItem(scenario.status.name))

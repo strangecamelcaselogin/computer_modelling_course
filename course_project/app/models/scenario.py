@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import IntEnum
 
-from peewee import CharField, PrimaryKeyField, ForeignKeyField, DateTimeField, SmallIntegerField
+from peewee import CharField, PrimaryKeyField, ForeignKeyField, DateTimeField, SmallIntegerField, TextField
 from app.models.base_model import BaseModel
 from app.models.data_collection import DataCollection
 from app.models.session import Session
@@ -33,10 +33,10 @@ class Scenario(BaseModel):
     session = ForeignKeyField(Session)
 
     # ссылка на датасет
-    collection = ForeignKeyField(DataCollection, null=True)
+    collection = ForeignKeyField(DataCollection)
 
-    # features = None  # выбранные признаки
-    # classifiers = None  # выбранный классификатор
+    feature_extractors = TextField()  # выбранные алгоритмы выделения признаков
+    classifier = TextField()  # выбранный классификатор
 
     # ссылка на результаты сценария
     statistic = ForeignKeyField(Statistic, unique=True, null=True)
