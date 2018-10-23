@@ -3,10 +3,11 @@ from functools import wraps
 
 from typing import List, Optional
 
-from app.learn_core.classifiers import SimpleClassifier, AbstractClassifier
-from app.learn_core.dataset_loaders import SimpleFSLoader
-from app.learn_core.features_extractors import SimpleExtractor, AbstractFeatureExtractor
-from app.models import Session, Scenario, DataCollection
+from learn.classifiers import SimpleClassifier
+from learn.features_extractors import SimpleExtractor
+from learn.dataset_loaders import SimpleFSLoader
+
+from app.db_models import Session, Scenario, DataCollection
 from config import config
 
 

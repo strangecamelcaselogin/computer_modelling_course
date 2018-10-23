@@ -5,7 +5,7 @@ from typing import Optional
 from PyQt5.QtWidgets import QDialog
 
 from app.model import Model
-from app.models import Scenario
+from app.db_models import Scenario
 from app.ui.scenario_dialog import Ui_scenario_dialog
 from app.widgets.multiselect_dialog import MultiselectDialog
 

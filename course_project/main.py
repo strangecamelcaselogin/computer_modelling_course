@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets
 from app.setup import logger
 from app.widgets import MainWindow
 from app.db import db
-from app.models import Session, Scenario, DataCollection, Statistic
+from app.db_models import Session, Scenario, DataCollection, Statistic
 
 
 if __name__ == "__main__":

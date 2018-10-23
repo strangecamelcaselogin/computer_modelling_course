@@ -1,4 +1,4 @@
-from app.learn_core.features_extractors.abstract_feature_extractor import AbstractFeatureExtractor
+from learn.features_extractors.abstract_feature_extractor import AbstractFeatureExtractor
 
 
 class SimpleExtractor(AbstractFeatureExtractor):

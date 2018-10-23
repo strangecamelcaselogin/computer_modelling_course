@@ -1,8 +1,8 @@
 from pathlib import Path
 from PIL import Image
 
-from app.learn_core.dataset import Dataset
-from app.learn_core.dataset_loaders.abstract_dataset_loader import AbstractDatasetLoader
+from app.core.dataset import Dataset
+from learn.dataset_loaders import AbstractDatasetLoader
 
 
 class SimpleFSLoader(AbstractDatasetLoader):

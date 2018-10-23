@@ -2,10 +2,10 @@ from datetime import datetime
 from enum import IntEnum
 
 from peewee import CharField, PrimaryKeyField, ForeignKeyField, DateTimeField, SmallIntegerField, TextField
-from app.models.base_model import BaseModel
-from app.models.data_collection import DataCollection
-from app.models.session import Session
-from app.models.statistic import Statistic
+from app.db_models.base_model import BaseModel
+from app.db_models.data_collection import DataCollection
+from app.db_models.session import Session
+from app.db_models.statistic import Statistic
 
 
 class StatusChoices(IntEnum):

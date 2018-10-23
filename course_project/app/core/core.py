@@ -2,12 +2,12 @@ from datetime import datetime
 from threading import Thread
 from typing import List
 
-from app.learn_core.classifiers.simple_classifier import SimpleClassifier
-from app.learn_core.dataset import Dataset
-from app.learn_core.features_extractors import AbstractFeatureExtractor, SimpleExtractor
-from app.learn_core.classifiers import AbstractClassifier
+from learn.features_extractors import AbstractFeatureExtractor, SimpleExtractor
+from learn.classifiers import AbstractClassifier, SimpleClassifier
+
+from app.core.dataset import Dataset
 from app.model import Model
-from app.models import Scenario, DataCollection
+from app.db_models import Scenario, DataCollection
 from app.setup import logger
 
 

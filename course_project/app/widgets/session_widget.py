@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QTableWidgetItem
 
 from app.helpers import noty
-from app.learn_core.core import SessionProcessor
+from app.core.core import SessionProcessor
 from app.model import Model
 from app.ui.session_widget import Ui_SessionWidget
 from app.widgets.scenario_dialog import ScenarioDialog

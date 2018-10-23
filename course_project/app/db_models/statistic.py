@@ -1,6 +1,6 @@
 from peewee import CharField, PrimaryKeyField, DoubleField, IntegerField
 
-from app.models.base_model import BaseModel
+from app.db_models.base_model import BaseModel
 
 
 class Statistic(BaseModel):
