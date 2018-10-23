@@ -8,6 +8,16 @@ from app.widgets import MainWindow
 from app.db import db
 from app.db_models import Session, Scenario, DataCollection, Statistic
 
+from learn.dataset_loaders import AbstractDatasetLoader
+from learn.features_extractors import AbstractFeatureExtractor
+from learn.classifiers import AbstractClassifier
+
+
+def show_plugins():
+    for plugabble in [AbstractDatasetLoader, AbstractFeatureExtractor, AbstractClassifier]:
+        names = '\n\t'.join(map(str, plugabble.plugins))
+        logger.info(f"{plugabble.__name__} plugins detected:\n\t{names}\n")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Computer modelling course project...')
@@ -16,6 +26,8 @@ if __name__ == "__main__":
 
     logger.setLevel(logging.DEBUG)
     logger.info('App start')
+
+    show_plugins()
 
     app = QtWidgets.QApplication(sys.argv)
 

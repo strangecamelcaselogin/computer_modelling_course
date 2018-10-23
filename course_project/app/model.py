@@ -3,8 +3,8 @@ from functools import wraps
 
 from typing import List, Optional
 
-from learn.classifiers import SimpleClassifier
-from learn.features_extractors import SimpleExtractor
+from learn.classifiers import AbstractClassifier
+from learn.features_extractors import AbstractFeatureExtractor
 from learn.dataset_loaders import SimpleFSLoader
 
 from app.db_models import Session, Scenario, DataCollection
@@ -102,7 +102,7 @@ class Model:
         return list(DataCollection.select())
 
     def new_data_collection(self, name, path):
-        loader = SimpleFSLoader(config.data_path)
+        loader = SimpleFSLoader(config.data_path)  # todo поддержать плагинность и настройки
 
         binary_dataset = loader.load(path).as_binary()
 
@@ -112,11 +112,11 @@ class Model:
 
     # Классификаторы
     def get_classifiers(self):
-        return [SimpleClassifier]
+        return AbstractClassifier.plugins
 
     # FE
     def get_feature_extractors(self):
-        return [SimpleExtractor]
+        return AbstractFeatureExtractor.plugins
 
     # Результаты
     def get_current_results(self):
