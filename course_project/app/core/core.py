@@ -31,7 +31,7 @@ class SessionProcessor:
     def start(self):
         """ Запуск обработки сессии """
         if self._running:
-            raise Exception()  # fixme
+            raise Exception("Can not start SessionProcessor - already running")  # fixme
 
         self._running = True
         self._thread = Thread(target=self._safe_thread_wrapper)
@@ -40,7 +40,7 @@ class SessionProcessor:
     def stop(self, timeout=60):
         """ Остановка обработки. Прогресс незавершенных сценариев будет утерян """
         if not self._running:
-            raise Exception()  # fixme
+            raise Exception("Can not stop thread - already stopped")  # fixme
 
         self._running = False
         if self._thread:
@@ -54,7 +54,6 @@ class SessionProcessor:
             # todo send signal?
         finally:
             self._running = False
-            # todo join?
 
     def _process(self):
         """

@@ -23,16 +23,16 @@ class SimpleFSLoader(AbstractDatasetLoader):
             └── image (3th copy).png
 
     """
-    def __init__(self, data_path, image_dimensions=(14, 14, 1)):
+    def __init__(self, data_path, sample_dimensions=(14, 14, 1)):
         """
         :param data_path: путь до папки с датасетами
-        :param image_dimensions: размерность изображений
+        :param sample_dimensions: размерность данных
         """
         self.data_path: Path = Path(data_path).absolute()
 
-        assert isinstance(image_dimensions, tuple) and len(image_dimensions) == 3
+        assert isinstance(sample_dimensions, tuple) and len(sample_dimensions) == 3
         # todo assert w == h?
-        self.image_dimensions = image_dimensions
+        self.sample_dimensions = sample_dimensions
 
     def load(self, path) -> Dataset:
         """
@@ -54,7 +54,7 @@ class SimpleFSLoader(AbstractDatasetLoader):
 
         return Dataset(name, train_images, train_labels, test_images, test_labels,
                        classes=train_classes,
-                       image_dimensions=self.image_dimensions)
+                       sample_dimensions=self.sample_dimensions)
 
     def _load_classes(self, path):
         images_by_class = {}
@@ -73,7 +73,7 @@ class SimpleFSLoader(AbstractDatasetLoader):
                 img = Image.open(file).convert('LA')
 
                 # приведем его к желаемым размерам
-                w, h, _ = self.image_dimensions
+                w, h, _ = self.sample_dimensions
                 img = img.resize((w, h), Image.ANTIALIAS)
 
                 # todo convert to numpy here?
