@@ -2,10 +2,10 @@ from pathlib import Path
 from PIL import Image
 
 from app.core.dataset import Dataset
-from app.core.dataset_loaders import AbstractDatasetLoader
+from app.core.abstract_dataset_loader import AbstractDatasetLoader
 
 
-class SimpleFSLoader(AbstractDatasetLoader):
+class FSImagesLoader(AbstractDatasetLoader):
     """
     Загружает изображения из файловой системы
     структура каталогов должны быть следующей:

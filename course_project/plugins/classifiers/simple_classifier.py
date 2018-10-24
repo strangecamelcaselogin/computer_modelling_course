@@ -15,3 +15,10 @@ class SimpleClassifier(AbstractClassifier):
 
     def validate(self, test_data):
         pass
+
+    def save(self):
+        pass
+
+    @classmethod
+    def load(cls):
+        pass

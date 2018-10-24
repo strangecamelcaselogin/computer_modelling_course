@@ -2,6 +2,7 @@ import logging
 import sys
 import argparse
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QTimer
 
 from app.setup import logger
 from app.widgets import MainWindow
@@ -31,6 +32,11 @@ if __name__ == "__main__":
     show_plugins()
 
     app = QtWidgets.QApplication(sys.argv)
+
+    # хак, для запуска event loop в этот поток, чтобы, например, сработад Ctrl+C
+    timer = QTimer()
+    timer.timeout.connect(lambda: None)
+    timer.start(100)
 
     main_window = None
     try:
