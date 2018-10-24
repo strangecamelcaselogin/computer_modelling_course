@@ -3,9 +3,9 @@ from functools import wraps
 
 from typing import List, Optional
 
-from learn.classifiers import AbstractClassifier
-from learn.features_extractors import AbstractFeatureExtractor
-from learn.dataset_loaders import SimpleFSLoader
+from app.core.classifiers import AbstractClassifier
+from app.core.features_extractors import AbstractFeatureExtractor
+from app.core.dataset_loaders import SimpleFSLoader
 
 from app.db_models import Session, Scenario, DataCollection
 from config import config

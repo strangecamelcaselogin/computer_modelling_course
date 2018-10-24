@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image
 
 from app.core.dataset import Dataset
-from learn.dataset_loaders import AbstractDatasetLoader
+from app.core.dataset_loaders import AbstractDatasetLoader
 
 
 class SimpleFSLoader(AbstractDatasetLoader):

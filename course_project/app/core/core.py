@@ -2,8 +2,8 @@ from datetime import datetime
 from threading import Thread
 from typing import List
 
-from learn.features_extractors import AbstractFeatureExtractor, SimpleExtractor
-from learn.classifiers import AbstractClassifier, SimpleClassifier
+from app.core.features_extractors import AbstractFeatureExtractor, SimpleExtractor
+from app.core.classifiers import AbstractClassifier, SimpleClassifier
 
 from app.core.dataset import Dataset
 from app.model import Model

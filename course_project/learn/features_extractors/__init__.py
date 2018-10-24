@@ -1,2 +1,0 @@
-from learn.features_extractors.abstract_feature_extractor import AbstractFeatureExtractor
-from learn.features_extractors.simple_extractor import SimpleExtractor

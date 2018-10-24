@@ -1,0 +1,2 @@
+from app.core.classifiers.abstract_classifier import AbstractClassifier
+from app.core.classifiers.simple_classifier import SimpleClassifier

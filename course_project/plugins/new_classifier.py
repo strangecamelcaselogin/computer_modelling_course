@@ -1,4 +1,4 @@
-from learn.classifiers import AbstractClassifier
+from app.core.classifiers import AbstractClassifier
 
 
 class NewClassifier(AbstractClassifier):

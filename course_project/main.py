@@ -8,9 +8,10 @@ from app.widgets import MainWindow
 from app.db import db
 from app.db_models import Session, Scenario, DataCollection, Statistic
 
-from learn.dataset_loaders import AbstractDatasetLoader
-from learn.features_extractors import AbstractFeatureExtractor
-from learn.classifiers import AbstractClassifier
+import plugins
+from app.core.dataset_loaders import AbstractDatasetLoader
+from app.core.features_extractors import AbstractFeatureExtractor
+from app.core.classifiers import AbstractClassifier
 
 
 def show_plugins():
