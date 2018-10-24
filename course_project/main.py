@@ -10,8 +10,8 @@ from app.db_models import Session, Scenario, DataCollection, Statistic
 
 import plugins
 from app.core.dataset_loaders import AbstractDatasetLoader
-from app.core.features_extractors import AbstractFeatureExtractor
-from app.core.classifiers import AbstractClassifier
+from app.core.abstract_feature_extractor import AbstractFeatureExtractor
+from app.core.abstract_classifier import AbstractClassifier
 
 
 def show_plugins():

@@ -43,12 +43,18 @@ class SessionWidget(QWidget, Ui_SessionWidget):
             )
 
     def run_session(self):
-        noty('msg', 'run')
-        self.session_processor.start()
+        try:
+            self.session_processor.start()
+            noty('msg', 'run')
+        except Exception as e:
+            noty('error', 'can not start')
 
     def stop_session(self):
-        noty('msg', 'stop')
-        self.session_processor.stop()
+        try:
+            self.session_processor.stop()
+            noty('msg', 'stop')
+        except Exception as e:
+            noty('error', 'stop error')
 
     def update(self):
         scenarios = self.model.get_current_scenarios()
@@ -60,6 +66,6 @@ class SessionWidget(QWidget, Ui_SessionWidget):
             table.insertRow(row_pos)
             table.setItem(row_pos, 0, QTableWidgetItem(scenario.name))
             table.setItem(row_pos, 1, QTableWidgetItem(scenario.collection.name))
-            table.setItem(row_pos, 2, QTableWidgetItem(scenario.feature_extractors))
-            table.setItem(row_pos, 3, QTableWidgetItem(scenario.classifier))
+            table.setItem(row_pos, 2, QTableWidgetItem(str(scenario.feature_extractors)))
+            table.setItem(row_pos, 3, QTableWidgetItem(str(scenario.classifier)))
             table.setItem(row_pos, 4, QTableWidgetItem(scenario.status.name))

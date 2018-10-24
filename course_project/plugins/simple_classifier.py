@@ -1,6 +1,6 @@
 import time
 
-from app.core.classifiers.abstract_classifier import AbstractClassifier
+from app.core.abstract_classifier import AbstractClassifier
 from app.setup import logger
 
 

@@ -1,10 +1,9 @@
-import ujson
 from functools import wraps
 
 from typing import List, Optional
 
-from app.core.classifiers import AbstractClassifier
-from app.core.features_extractors import AbstractFeatureExtractor
+from app.core.abstract_classifier import AbstractClassifier
+from app.core.abstract_feature_extractor import AbstractFeatureExtractor
 from app.core.dataset_loaders import SimpleFSLoader
 
 from app.db_models import Session, Scenario, DataCollection
@@ -75,7 +74,7 @@ class Model:
         return Scenario.get(id=id_)
 
     @update_view
-    def new_scenario(self, name: str, data_collection: DataCollection, feature_extractors: List[str], classifier: str):
+    def new_scenario(self, name: str, data_collection: DataCollection, feature_extractors: Optional[List[str]], classifier: str):
         if self._current_session is None:
             return
 
@@ -83,7 +82,7 @@ class Model:
             name=name,
             session=self._current_session,
             collection=data_collection,
-            feature_extractors=ujson.dumps(feature_extractors),
+            feature_extractors=feature_extractors,
             classifier=classifier
         )
 

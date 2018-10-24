@@ -1,9 +1,9 @@
-import ujson
 from collections import OrderedDict
 from typing import Optional
 
 from PyQt5.QtWidgets import QDialog
 
+from app.helpers import noty
 from app.model import Model
 from app.db_models import Scenario
 from app.ui.scenario_dialog import Ui_scenario_dialog
@@ -28,7 +28,7 @@ class ScenarioDialog(QDialog, Ui_scenario_dialog):
         if scenario:
             self.name = scenario.name
             self.status = scenario.status  # todo for human
-            self.selected_feature_extractors = ujson.loads(scenario.feature_extractors)
+            self.selected_feature_extractors = scenario.feature_extractors
         else:
             self.name = default_name
             self.status = 'Создается'
@@ -38,6 +38,10 @@ class ScenarioDialog(QDialog, Ui_scenario_dialog):
 
     def connectUi(self):
         self.feature_extraction_button.clicked.connect(self.show_feature_extraction_dialog)
+        self.classifier_settings_button.clicked.connect(self.not_implemented)  # todo
+
+    def not_implemented(self):
+        noty("not_implemented", "not_implemented")
 
     def show_feature_extraction_dialog(self):
         items = OrderedDict()
@@ -47,9 +51,9 @@ class ScenarioDialog(QDialog, Ui_scenario_dialog):
 
         d = MultiselectDialog(
             "Настройка извлечения признаков",
-            "Выберите алгоритмы извлечения признаков",
-            items
-        )
+            ("Выберите алгоритмы извлечения признаков.\n" 
+             "Чтобы пропустить этап выделения признаков - не выбирайте ничего."),
+            items)
 
         ok = d.exec_()
         if ok:
@@ -86,7 +90,7 @@ class ScenarioDialog(QDialog, Ui_scenario_dialog):
             return True, {
                 'name': self.name,
                 'data_collection': self.data_collections[self.data_collection_combo.currentIndex()],
-                'feature_extractors': self.selected_feature_extractors,
+                'feature_extractors': self.selected_feature_extractors if len(self.selected_feature_extractors) else None,
                 'classifier_class': self.classifier_combo.currentText()
             }
 

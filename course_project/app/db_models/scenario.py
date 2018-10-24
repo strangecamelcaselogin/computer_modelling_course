@@ -1,3 +1,4 @@
+import ujson
 from datetime import datetime
 from enum import IntEnum
 
@@ -12,6 +13,14 @@ class StatusChoices(IntEnum):
     INITIAL = 1
     IN_PROGRESS = 2
     DONE = 3
+
+
+class JSONField(TextField):
+    def db_value(self, value):
+        return value if value is None else ujson.dumps(value)
+
+    def python_value(self, value):
+        return value if value is None else ujson.loads(value)
 
 
 class Scenario(BaseModel):
@@ -35,8 +44,11 @@ class Scenario(BaseModel):
     # ссылка на датасет
     collection = ForeignKeyField(DataCollection)
 
-    feature_extractors = TextField()  # выбранные алгоритмы выделения признаков
-    classifier = TextField()  # выбранный классификатор
+    # выбранные алгоритмы выделения признаков
+    feature_extractors = JSONField(null=True)
+
+    # выбранный классификатор
+    classifier = JSONField()
 
     # ссылка на результаты сценария
     statistic = ForeignKeyField(Statistic, unique=True, null=True)
