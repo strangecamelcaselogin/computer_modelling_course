@@ -4,17 +4,16 @@ from app.core.abstract_classifier import AbstractClassifier
 from app.setup import logger
 
 
-class SimpleClassifier(AbstractClassifier):
+class DummyClassifier(AbstractClassifier):
+    able_to_classify_by = 2
+
     def learn(self, train_data):
         logger.info('start learn')
         time.sleep(30)
         logger.info('stop learn')
 
-    def predict(self, images):
+    def predict(self, image):
         return 42
-
-    def validate(self, test_data):
-        pass
 
     def save(self):
         pass

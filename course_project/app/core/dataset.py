@@ -26,7 +26,7 @@ class Dataset:
         classes_numbers_set = set(list(range(len(classes))))
         assert classes_numbers_set == set(train_labels)
         assert classes_numbers_set == set(test_labels)
-        assert isinstance(sample_dimensions, tuple) and len(sample_dimensions) == 3
+        assert isinstance(sample_dimensions, tuple)
 
         self.name = name
 

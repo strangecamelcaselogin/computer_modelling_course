@@ -1,10 +1,11 @@
 from functools import wraps
+from pathlib import Path
 
-from typing import List, Optional
+from typing import List, Optional, Type, TypeVar
 
 from app.core.abstract_classifier import AbstractClassifier
 from app.core.abstract_feature_extractor import AbstractFeatureExtractor
-from app.core.dataset_loaders import SimpleFSLoader
+from app.core.abstract_dataset_loader import AbstractDatasetLoader
 
 from app.db_models import Session, Scenario, DataCollection
 from config import config
@@ -100,8 +101,8 @@ class Model:
     def get_data_collections(self):
         return list(DataCollection.select())
 
-    def new_data_collection(self, name, path):
-        loader = SimpleFSLoader(config.data_path)  # todo поддержать плагинность и настройки
+    def new_data_collection(self, name: str, path: Path, loader_cls: Type[AbstractDatasetLoader]):
+        loader = loader_cls(config.data_path)
 
         binary_dataset = loader.load(path).as_binary()
 
@@ -110,13 +111,32 @@ class Model:
         return dc
 
     # Классификаторы
-    def get_classifiers(self):
+    @staticmethod
+    def get_classifiers():
         return AbstractClassifier.plugins
 
     # FE
-    def get_feature_extractors(self):
+    @staticmethod
+    def get_feature_extractors():
         return AbstractFeatureExtractor.plugins
+
+    # DatasetLoaders
+    @staticmethod
+    def get_dataset_loaders():
+        return AbstractDatasetLoader.plugins
 
     # Результаты
     def get_current_results(self):
         raise NotImplementedError
+
+    # ...
+    T = TypeVar('T')
+
+    @staticmethod
+    def find_plugin_by_name(abstract_pluggable_cls: T, plugin_name) -> Type[T]:
+        """ Находит плагин в abstract_pluggable_cls по его имени """
+        for plugin_cls in abstract_pluggable_cls.plugins:
+            if plugin_cls.__name__ == plugin_name:
+                return plugin_cls
+        else:
+            raise Exception(f'AbstractFeatureExtractor plugin {plugin_name} not found')  # fixme

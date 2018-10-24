@@ -40,11 +40,22 @@
     <property name="title">
      <string>Данные</string>
     </property>
-    <addaction name="register_datacollection_action"/>
+    <widget class="QMenu" name="create_data_collection_menu">
+     <property name="title">
+      <string>Добавить</string>
+     </property>
+    </widget>
+    <addaction name="create_data_collection_menu"/>
     <addaction name="delete_datacollection_action"/>
+   </widget>
+   <widget class="QMenu" name="tools_menu">
+    <property name="title">
+     <string>Инструменты</string>
+    </property>
    </widget>
    <addaction name="session_menu"/>
    <addaction name="data_menu"/>
+   <addaction name="tools_menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="create_action">
@@ -70,11 +81,6 @@
   <action name="exit_action">
    <property name="text">
     <string>Выйти</string>
-   </property>
-  </action>
-  <action name="register_datacollection_action">
-   <property name="text">
-    <string>Указать</string>
    </property>
   </action>
   <action name="delete_datacollection_action">

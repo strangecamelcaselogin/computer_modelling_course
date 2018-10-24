@@ -1,5 +1,6 @@
 from pathlib import Path
 from PIL import Image
+from PyQt5.QtWidgets import QFileDialog
 
 from app.core.dataset import Dataset
 from app.core.abstract_dataset_loader import AbstractDatasetLoader
@@ -28,11 +29,17 @@ class FSImagesLoader(AbstractDatasetLoader):
         :param data_path: путь до папки с датасетами
         :param sample_dimensions: размерность данных
         """
-        self.data_path: Path = Path(data_path).absolute()
-
         assert isinstance(sample_dimensions, tuple) and len(sample_dimensions) == 3
         # todo assert w == h?
-        self.sample_dimensions = sample_dimensions
+
+        super().__init__(data_path, sample_dimensions)
+
+    @staticmethod
+    def get_dialog(parent, data_path: str):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.ShowDirsOnly
+        return QFileDialog.getExistingDirectory(parent, 'Загрузить данные', data_path, options=options)
 
     def load(self, path) -> Dataset:
         """

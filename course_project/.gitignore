@@ -1,6 +1,7 @@
 base.db
 data/*
 !data/.gitkeep
+!data/csv
 .idea/
 *.pyc
 venv/

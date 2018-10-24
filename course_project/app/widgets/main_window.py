@@ -1,8 +1,10 @@
 from pathlib import Path
+from typing import Type
 
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QAction
 from peewee import IntegrityError
 
+from app.core.abstract_dataset_loader import AbstractDatasetLoader
 from app.helpers import noty, text_dialog
 from app.setup import logger
 from app.model import Model
@@ -43,8 +45,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.exit_action.triggered.connect(self.application.quit)
 
         # меню коллекций
-        self.register_datacollection_action.triggered.connect(self.new_dataset)
+        for loader_cls in self.model.get_dataset_loaders():
+            action = QAction(loader_cls.__name__, self.create_data_collection_menu)
+            action.triggered.connect(lambda useless_qt_param, c=loader_cls: self.new_dataset(c))  # fixme memory leak?
+            self.create_data_collection_menu.addAction(action)
+
         self.delete_datacollection_action.triggered.connect(self.not_implemented)  # todo
+
+        # todo меню инструментов
 
     def not_implemented(self):
         noty("not_implemented", "not_implemented")
@@ -93,19 +101,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.show_session()
             self.model.set_current_session(session)
 
-    def new_dataset(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        options |= QFileDialog.ShowDirsOnly
-        path = QFileDialog.getExistingDirectory(self, 'Загрузить данные', str(self.data_path), options=options)
+    def new_dataset(self, loader_cls: Type[AbstractDatasetLoader]):
+        path = loader_cls.get_dialog(self, str(self.data_path))
         if path:
             path = Path(path)
             name = path.relative_to(self.data_path).name
             try:
-                self.model.new_data_collection(name, path)
+                self.model.new_data_collection(name, path, loader_cls)
             except Exception as e:
-                noty("Ошибка", "Не получилось загрузить данные")  # fixme
                 logger.exception(e)
+                noty("Ошибка", "Не получилось загрузить данные")  # fixme
 
     def update(self):
         """ Синхронизация с моделью, коллбек """

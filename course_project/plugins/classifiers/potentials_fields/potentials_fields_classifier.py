@@ -1,18 +1,26 @@
-from typing import Callable
+import math
 
 from app.core.abstract_classifier import AbstractClassifier
+from app.core.dataset import Dataset
+from plugins.classifiers.potentials_fields.base import sq_dist
 
 
 class PotentialFieldsClassifier(AbstractClassifier):
-    def __init__(self, f: Callable, classes, dimensions: int=2):
+    able_to_classify_by = 2
+
+    def __init__(self, classes, sample_dimensions):
         """
-        :param dimensions: размерность модели
+        :param sample_dimensions: размерности модели
         """
-        self.f = f  # потенциальная функция
         self.classes = classes
         self._potential = []  # "история" для вычисления степени над e
 
-        self.dimensions = dimensions
+        self.dimensions = len(sample_dimensions)
+
+    @staticmethod
+    def f(x, xk, a=1):
+        """ Потенциальная функция: K(x, xk) """
+        return a * math.e ** (-a * sq_dist(x, xk))
 
     @staticmethod
     def r(k, class_number):
@@ -32,9 +40,10 @@ class PotentialFieldsClassifier(AbstractClassifier):
 
         return result
 
-    def learn(self, images, labels, limit=100):
+    def learn(self, train_data: Dataset.Data, limit=100):
         """ Процесс обучения """
-        assert len(images) == len(labels), 'Length of images and labels must be equal!'
+        images = train_data.data
+        labels = train_data.labels
 
         success = total = 0
         while total < limit:
@@ -64,10 +73,7 @@ class PotentialFieldsClassifier(AbstractClassifier):
             print(f'K({image}): {res}')
 
         # номер класса, 0 или 1
-        return int(res < 0)
-
-    def validate(self, test_data):
-        pass
+        return res < 0
 
     def save(self):
         pass

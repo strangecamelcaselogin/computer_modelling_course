@@ -10,7 +10,7 @@ from app.db import db
 from app.db_models import Session, Scenario, DataCollection, Statistic
 
 import plugins
-from app.core.dataset_loaders import AbstractDatasetLoader
+from app.core.abstract_dataset_loader import AbstractDatasetLoader
 from app.core.abstract_feature_extractor import AbstractFeatureExtractor
 from app.core.abstract_classifier import AbstractClassifier
 
