@@ -1,18 +1,20 @@
 import math
+import pickle
 
 from app.core.abstract_classifier import AbstractClassifier
 from app.core.dataset import Dataset
+from app.core.protocol import Protocol
 from plugins.classifiers.potentials_fields.base import sq_dist
 
 
 class StochasticPotentialFieldsClassifier(AbstractClassifier):
     able_to_classify_by = 2
 
-    def __init__(self, classes, sample_dimensions):
+    def __init__(self, classes, sample_dimensions, protocol: Protocol):
         """
         :param sample_dimensions: размерность модели
         """
-        super().__init__(classes, sample_dimensions)
+        super().__init__(classes, sample_dimensions, protocol)
 
         self._potentials = {i: [] for i in classes}  # "история" для вычисления степени над e
         self.dimensions = len(sample_dimensions)
@@ -40,11 +42,11 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
         potentials_j = {i: 1 for i in self.classes}
         success = total = 0
         while total < limit:
-            print('Global Iteration.')
+            self.protocol.add_message('Global Iteration.')
 
             for xk_new, target_cls in zip(images, labels):
                 total += 1
-                print(f'Local iteration: {total}, target_cls: {target_cls}')
+                self.protocol.add_message(f'Local iteration: {total}, target_cls: {target_cls}')
                 for cls in self.classes:
                     res = self.K(xk_new, for_cls=cls)
 
@@ -67,14 +69,10 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
                         else:
                             success += 1
 
-                    print(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
-                print()
+                    self.protocol.add_message(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
 
                 if success >= len(images):
-                    print(f'Break by success count. Total iterations: {total}')
-                    for cls, ph in self._potentials.items():
-                        print(cls, ph)
-                    print()
+                    self.protocol.add_message(f'Break by success count. Total iterations: {total}')
 
                     return total
 
@@ -90,11 +88,20 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
         return m_cls_idx
 
     def save(self):
-        pass
+        return pickle.dumps({
+            'sample_dimensions': self.sample_dimensions,
+            'classes': self.classes,
+            '_potentials': self._potentials
+        })
 
     @classmethod
-    def load(cls):
-        pass
+    def load(cls, data: bytes):
+        data = pickle.loads(data)
+
+        classifier = cls(data['classes'], data['sample_dimensions'])
+        classifier._potentials = data['_potentials']  # fixme
+
+        return classifier
 
 
 class ReStochasticPotentialFieldsClassifier(StochasticPotentialFieldsClassifier):
@@ -106,7 +113,7 @@ class ReStochasticPotentialFieldsClassifier(StochasticPotentialFieldsClassifier)
         potentials_j = {i: 1 for i in self.classes}
         success = total = 0
         while total < limit:
-            print('Global Iteration.')
+            self.protocol.add_message('Global Iteration.')
 
             total_success = True
             for cls in self.classes:
@@ -137,13 +144,8 @@ class ReStochasticPotentialFieldsClassifier(StochasticPotentialFieldsClassifier)
                         else:
                             success += 1
 
-                    print(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
-                print()
+                    self.protocol.add_message(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
 
             if total_success:
-                print(f'Break by success count. Total iterations: {total}')
-                for cls, ph in self._potentials.items():
-                    print(cls, ph)
-                print()
-
+                self.protocol.add_message(f'Break by success count. Total iterations: {total}')
                 return total

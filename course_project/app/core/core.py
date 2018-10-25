@@ -6,6 +6,7 @@ from app.core.abstract_feature_extractor import AbstractFeatureExtractor
 from app.core.abstract_classifier import AbstractClassifier
 
 from app.core.dataset import Dataset
+from app.core.protocol import Protocol
 from app.model import Model
 from app.db_models import Scenario, DataCollection
 from app.setup import logger
@@ -63,26 +64,47 @@ class SessionProcessor:
         while self._running and len(scenarios):
             s = scenarios.pop(0)
 
+            protocol = Protocol(lambda p: print(p.last_message))
+
+            protocol.add_message('Загрузка данных...')
             dataset = self._load_dataset(s)
+            protocol.add_message('Загружено.')  # todo детальнее
 
+            protocol.add_message('Загрузка алгоритмов извлечения признаков...')
             extractors = self._get_feature_extractors(s)
-            processed_dataset = self._process_dataset(dataset, extractors) if extractors else dataset
+            protocol.add_message('Загружено.')  # todo детальнее
 
+            if extractors:
+                protocol.add_message('Обработка входных данных алгоритмами извлечения признаков...')
+                processed_dataset = self._process_dataset(dataset, extractors)
+                protocol.add_message('Признаки извлечены')
+            else:
+                protocol.add_message('Извлечение признаков не предусмотрено сценарием.')
+                processed_dataset = dataset
+
+            protocol.add_message('Создание классификатора...')
             # todo fetch additional kwargs
             classifier = self._instantiate_classifier(s, [], {
                 'classes': processed_dataset.classes,
-                'sample_dimensions': processed_dataset.sample_dimensions
+                'sample_dimensions': processed_dataset.sample_dimensions,
+                'protocol': protocol
             })
 
+            protocol.add_message('Обучение классификатора...')
             time = datetime.now()
-            classifier.learn(processed_dataset.train_data)
+            res = classifier.learn(processed_dataset.train_data)
             time = datetime.now() - time
-            print(f'time: {time}')
+            protocol.add_message(f'Обучение классификатора завершено, время обучения: {time}')
 
+            protocol.add_message('Начало валидации...')
             e, t = classifier.validate(processed_dataset.test_data)
-            print(f'validated classifier. errors: {e}/{t}')
+            protocol.add_message(f'Валидация завершена, ошибок: {e}/{t}')
+
+            protocol.add_message('Сохранение модели...')
+            binary_model = classifier.save()
+            protocol.add_message('Сохранено.')
+            # todo save protocol
             # todo save statistics, time
-            # todo save_classifier?
 
     @staticmethod
     def _load_dataset(current_scenario: Scenario) -> Dataset:
@@ -100,7 +122,7 @@ class SessionProcessor:
 
         return result
 
-    def _instantiate_classifier(self, current_scenario: Scenario, arguments=(), key_arguments=None) -> Type[AbstractClassifier]:
+    def _instantiate_classifier(self, current_scenario: Scenario, arguments=(), key_arguments=None) -> AbstractClassifier:
         """ Создает экземпляр классфиикатора current_scenario.classifier """
         if key_arguments is None:
             key_arguments = {}

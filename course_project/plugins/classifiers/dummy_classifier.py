@@ -19,5 +19,5 @@ class DummyClassifier(AbstractClassifier):
         pass
 
     @classmethod
-    def load(cls):
+    def load(cls, data):
         pass

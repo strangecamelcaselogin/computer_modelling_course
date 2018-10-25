@@ -1,18 +1,20 @@
 import math
+import pickle
 
 from app.core.abstract_classifier import AbstractClassifier
 from app.core.dataset import Dataset
+from app.core.protocol import Protocol
 from plugins.classifiers.potentials_fields.base import sq_dist
 
 
 class PotentialFieldsClassifier(AbstractClassifier):
     able_to_classify_by = 2
 
-    def __init__(self, classes, sample_dimensions):
+    def __init__(self, classes, sample_dimensions, protocol: Protocol):
         """
         :param sample_dimensions: размерности модели
         """
-        super().__init__(classes, sample_dimensions)
+        super().__init__(classes, sample_dimensions, protocol)
         self._potential = []  # "история" для вычисления степени над e
         self.dimensions = len(sample_dimensions)
 
@@ -57,10 +59,10 @@ class PotentialFieldsClassifier(AbstractClassifier):
                     success += 1
                     # если r равна 0 на протяжении N раз, то обучение завершено
                     if success >= len(images):
-                        print(f'Break by success count. Total iterations: {total}, pow of e is: {len(self._potential)}')
+                        self.protocol.add_message(f'Break by success count. Total iterations: {total}, pow of e is: {len(self._potential)}')
                         return total
         else:
-            print(f'Stop by reaching limit {limit}')
+            self.protocol.add_message(f'Stop by reaching limit {limit}')
 
         return total
 
@@ -69,14 +71,23 @@ class PotentialFieldsClassifier(AbstractClassifier):
 
         res = self.K(image)
         if not quiet:
-            print(f'K({image}): {res}')
+            print(f'K({image}): {res}')  # todo protocol
 
         # номер класса, 0 или 1
         return res < 0
 
     def save(self):
-        pass
+        return pickle.dumps({
+            'sample_dimensions': self.sample_dimensions,
+            'classes': self.classes,
+            '_potential': self._potential
+        })
 
     @classmethod
-    def load(cls):
-        pass
+    def load(cls, data: bytes):
+        data = pickle.loads(data)
+
+        classifier = cls(data['classes'], data['sample_dimensions'])
+        classifier._potential = data['_potential']  # fixme
+
+        return classifier
