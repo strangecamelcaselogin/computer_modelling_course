@@ -12,9 +12,8 @@ class PotentialFieldsClassifier(AbstractClassifier):
         """
         :param sample_dimensions: размерности модели
         """
-        self.classes = classes
+        super().__init__(classes, sample_dimensions)
         self._potential = []  # "история" для вычисления степени над e
-
         self.dimensions = len(sample_dimensions)
 
     @staticmethod

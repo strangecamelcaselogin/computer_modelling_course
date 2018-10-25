@@ -1,4 +1,4 @@
-type,class,,
+type,class,0,1
 train,0,0.25,0.75
 train,0,1,1
 train,0,2,1

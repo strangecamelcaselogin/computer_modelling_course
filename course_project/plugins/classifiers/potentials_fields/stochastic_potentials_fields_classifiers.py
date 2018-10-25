@@ -12,9 +12,9 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
         """
         :param sample_dimensions: размерность модели
         """
-        self.classes = classes
-        self._potentials = {i: [] for i in classes}  # "история" для вычисления степени над e
+        super().__init__(classes, sample_dimensions)
 
+        self._potentials = {i: [] for i in classes}  # "история" для вычисления степени над e
         self.dimensions = len(sample_dimensions)
 
     @staticmethod

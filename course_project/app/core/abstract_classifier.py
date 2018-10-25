@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from app.core.dataset import Dataset
 from app.core.plugin_base import PluginBase
 
@@ -6,6 +8,10 @@ class AbstractClassifier(PluginBase, abstract=True):
     plugins = []
 
     able_to_classify_by = 0  # на сколько классов может классифицировать
+
+    def __init__(self, classes: List[int], sample_dimensions: Tuple[int]):
+        self.classes = classes
+        self.sample_dimensions = sample_dimensions
 
     def learn(self, train_data: Dataset.Data):
         raise NotImplementedError
