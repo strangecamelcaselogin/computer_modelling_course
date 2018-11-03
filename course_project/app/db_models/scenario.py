@@ -1,4 +1,4 @@
-import ujson
+import json
 from datetime import datetime
 from enum import IntEnum
 
@@ -17,10 +17,10 @@ class StatusChoices(IntEnum):
 
 class JSONField(TextField):
     def db_value(self, value):
-        return value if value is None else ujson.dumps(value)
+        return value if value is None else json.dumps(value)
 
     def python_value(self, value):
-        return value if value is None else ujson.loads(value)
+        return value if value is None else json.loads(value)
 
 
 class Scenario(BaseModel):

@@ -5,7 +5,6 @@
 
 
 # Классификаторы
-from plugins.classifiers.dummy_classifier import DummyClassifier
 from plugins.classifiers.potentials_fields.potentials_fields_classifier import PotentialFieldsClassifier
 from plugins.classifiers.potentials_fields.stochastic_potentials_fields_classifiers \
     import StochasticPotentialFieldsClassifier, ReStochasticPotentialFieldsClassifier
