@@ -17,7 +17,9 @@ class AbstractDatasetLoader(PluginBase, abstract=True):
 
     @staticmethod
     def get_dialog(parent, data_path: str):
+        """ Показывает пользователю диалог загрузчика (ожидается, что в модальном окне)"""
         raise NotImplementedError
 
     def load(self, path: Path) -> Dataset:
+        """ процесс загрузки данных """
         raise NotImplementedError

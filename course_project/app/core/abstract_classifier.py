@@ -15,13 +15,26 @@ class AbstractClassifier(PluginBase, abstract=True):
         self.sample_dimensions = sample_dimensions
         self.protocol = protocol
 
-    def learn(self, train_data: Dataset.Data):  # todo
+    def learn(self, train_data: Dataset.Data):
+        """
+        Обучение модели
+        :param train_data: обучающая часть датасета
+        """
         raise NotImplementedError
 
-    def predict(self, image):  # todo
+    def predict(self, image) -> int:
+        """
+        Классификация образа image
+        :param image: образ
+        :return: номер класса
+        """
         raise NotImplementedError
 
-    def validate(self, test_data: Dataset.Data):  # todo typeing
+    def validate(self, test_data: Dataset.Data) -> Tuple[int, int]:
+        """
+        Валидация качества обучения
+        :param test_data: тестовая часть датасета
+        """
         data, labels = test_data.data, test_data.labels
 
         errors = 0
@@ -33,8 +46,10 @@ class AbstractClassifier(PluginBase, abstract=True):
         return errors, len(data)
 
     def save(self) -> bytes:
+        """ Метод сохранения модели в бинарном виде """
         raise NotImplementedError
 
     @classmethod
     def load(cls, data: bytes) -> 'AbstractClassifier':
+        """ Восстановление экземпляра AbstractClassifier из сериализованного вида """
         raise NotImplementedError
