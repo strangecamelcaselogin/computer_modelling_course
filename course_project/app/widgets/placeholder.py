@@ -6,7 +6,7 @@ class PlaceholderWidget(QWidget):
     def __init__(self):
         super().__init__()
 
-        label = QLabel('Placeholder Text Here')
+        label = QLabel('Система моделирования распознавания образов')
         label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         label.setAlignment(Qt.AlignCenter)
 
