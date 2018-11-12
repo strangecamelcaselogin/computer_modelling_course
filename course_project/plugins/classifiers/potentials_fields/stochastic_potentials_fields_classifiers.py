@@ -42,11 +42,11 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
         potentials_j = {i: 1 for i in self.classes}
         success = total = 0
         while total < limit:
-            self.protocol.add_message('Global Iteration.')
+            self.protocol('Global Iteration.')
 
             for xk_new, target_cls in zip(images, labels):
                 total += 1
-                self.protocol.add_message(f'Local iteration: {total}, target_cls: {target_cls}')
+                self.protocol(f'Local iteration: {total}, target_cls: {target_cls}')
                 for cls in self.classes:
                     res = self.K(xk_new, for_cls=cls)
 
@@ -69,10 +69,10 @@ class StochasticPotentialFieldsClassifier(AbstractClassifier):
                         else:
                             success += 1
 
-                    self.protocol.add_message(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
+                    self.protocol(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
 
                 if success >= len(images):
-                    self.protocol.add_message(f'Break by success count. Total iterations: {total}')
+                    self.protocol(f'Break by success count. Total iterations: {total}')
 
                     return total
 
@@ -113,7 +113,7 @@ class ReStochasticPotentialFieldsClassifier(StochasticPotentialFieldsClassifier)
         potentials_j = {i: 1 for i in self.classes}
         success = total = 0
         while total < limit:
-            self.protocol.add_message('Global Iteration.')
+            self.protocol('Global Iteration.')
 
             total_success = True
             for cls in self.classes:
@@ -144,8 +144,8 @@ class ReStochasticPotentialFieldsClassifier(StochasticPotentialFieldsClassifier)
                         else:
                             success += 1
 
-                    self.protocol.add_message(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
+                    self.protocol(f'{"*" if success == 0 else ""} #{cls}, K: {res}')
 
             if total_success:
-                self.protocol.add_message(f'Break by success count. Total iterations: {total}')
+                self.protocol(f'Break by success count. Total iterations: {total}')
                 return total

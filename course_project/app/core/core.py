@@ -65,24 +65,21 @@ class SessionProcessor:
             s = scenarios.pop(0)
 
             protocol = Protocol(lambda p: print(p.last_message))
-
-            protocol.add_message('Загрузка данных...')
+            protocol(f'\n\nНачата обработка сценария "{s.name}"...\n\n')
             dataset = self._load_dataset(s)
-            protocol.add_message('Загружено.')  # todo детальнее
-
-            protocol.add_message('Загрузка алгоритмов извлечения признаков...')
             extractors = self._get_feature_extractors(s)
-            protocol.add_message('Загружено.')  # todo детальнее
+
+            # todo вывести имя классификатора, параметры, датасет и тд
 
             if extractors:
-                protocol.add_message('Обработка входных данных алгоритмами извлечения признаков...')
+                protocol('Обработка входных данных алгоритмами извлечения признаков...')
                 processed_dataset = self._process_dataset(dataset, extractors)
-                protocol.add_message('Признаки извлечены')
+                protocol('Признаки извлечены')
             else:
-                protocol.add_message('Извлечение признаков не предусмотрено сценарием.')
+                protocol('Извлечение признаков не предусмотрено сценарием.')
                 processed_dataset = dataset
 
-            protocol.add_message('Создание классификатора...')
+            protocol('Создание классификатора...')
             # todo fetch additional kwargs
             classifier = self._instantiate_classifier(s, [], {
                 'classes': processed_dataset.classes,
@@ -90,19 +87,25 @@ class SessionProcessor:
                 'protocol': protocol
             })
 
-            protocol.add_message('Обучение классификатора...')
-            time = datetime.now()
-            res = classifier.learn(processed_dataset.train_data)
-            time = datetime.now() - time
-            protocol.add_message(f'Обучение классификатора завершено, время обучения: {time}')
+            with protocol('Обучение классификатора... Лог:'):
+                time = datetime.now()
+                res = classifier.learn(processed_dataset.train_data)
+                time = datetime.now() - time
 
-            protocol.add_message('Начало валидации...')
-            e, t = classifier.validate(processed_dataset.test_data)
-            protocol.add_message(f'Валидация завершена, ошибок: {e}/{t}')
+            protocol(f'\nОбучение классификатора завершено, время обучения: {time}')
 
-            protocol.add_message('Сохранение модели...')
+            protocol('Начало валидации...')
+            errors = classifier.validate(processed_dataset.test_data)
+            protocol(f'Валидация завершена, ошибок: {len(errors)}/{len(processed_dataset.test_data.data)}')
+
+            if errors:
+                with protocol('Ошибки:'):
+                    for cls, true_cls, sample in errors:
+                        protocol(f'Класс: {cls}, ожидался: {true_cls},\nОбразец: {str(sample)}')
+
+            protocol('Сохранение модели...')
             binary_model = classifier.save()
-            protocol.add_message('Сохранено.')
+            protocol('Сохранено.')
             # todo save protocol
             # todo save statistics, time
 

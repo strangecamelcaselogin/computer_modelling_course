@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 from app.core.dataset import Dataset
 from app.core.plugin_base import PluginBase
@@ -30,20 +30,20 @@ class AbstractClassifier(PluginBase, abstract=True):
         """
         raise NotImplementedError
 
-    def validate(self, test_data: Dataset.Data) -> Tuple[int, int]:
+    def validate(self, test_data: Dataset.Data) -> List[Tuple[int, int, Any]]:
         """
         Валидация качества обучения
         :param test_data: тестовая часть датасета
         """
         data, labels = test_data.data, test_data.labels
 
-        errors = 0
+        errors = []
         for sample, true_cls in zip(data, labels):
             cls = self.predict(sample)
             if cls != true_cls:
-                errors += 1
+                errors.append((cls, true_cls, sample))
 
-        return errors, len(data)
+        return errors
 
     def save(self) -> bytes:
         """ Метод сохранения модели в бинарном виде """

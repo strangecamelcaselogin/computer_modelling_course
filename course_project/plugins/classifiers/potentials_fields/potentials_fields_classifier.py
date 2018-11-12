@@ -59,10 +59,10 @@ class PotentialFieldsClassifier(AbstractClassifier):
                     success += 1
                     # если r равна 0 на протяжении N раз, то обучение завершено
                     if success >= len(images):
-                        self.protocol.add_message(f'Break by success count. Total iterations: {total}, pow of e is: {len(self._potential)}')
+                        self.protocol(f'Break by success count. Total iterations: {total}, pow of e is: {len(self._potential)}')
                         return total
         else:
-            self.protocol.add_message(f'Stop by reaching limit {limit}')
+            self.protocol(f'Stop by reaching limit {limit}')
 
         return total
 
